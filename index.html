@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Title shown in the browser tab -->
+  <title>Abhinav V - Personal Dashboard</title>
+
+  <!--
+    Keeping CSS in here so the submission is simple (just index.html + app.js).
+    Layout: profile card on the left, form on the right (stacks on small screens).
+  -->
+  <style>
+    :root{
+      --bg: #0f172a;
+      --panel: rgba(17,24,39,.55);
+      --card: rgba(11,18,32,.65);
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --border: rgba(148,163,184,.22);
+      --shadow: 0 10px 25px rgba(0,0,0,.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body{
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      background:
+        radial-gradient(800px 400px at 20% 0%, rgba(56,189,248,.18), transparent 55%),
+        radial-gradient(800px 400px at 80% 20%, rgba(167,139,250,.18), transparent 55%),
+        var(--bg);
+    }
+
+    header{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 18px 10px;
+    }
+
+    header h1{
+      margin: 0;
+      font-size: 1.7rem;
+      letter-spacing: .2px;
+    }
+
+    header p{
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    main{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    @media (min-width: 880px){
+      main{ grid-template-columns: 1.05fr .95fr; }
+    }
+
+    .panel{
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    /* Profile Card */
+    .profile-card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .profile-card.bump{
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(0,0,0,.45);
+    }
+
+    .profile-top{
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar{
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(56,189,248,.9), rgba(167,139,250,.9));
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      color: #06121a;
+      user-select: none;
+      box-shadow: 0 10px 18px rgba(0,0,0,.35);
+    }
+
+    .profile-meta h2{
+      margin: 0;
+      font-size: 1.15rem;
+    }
+
+    .profile-meta .email{
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: .95rem;
+      word-break: break-word;
+    }
+
+    .color-row{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px;
+      border: 1px dashed rgba(148,163,184,.35);
+      border-radius: 14px;
+    }
+
+    .color-badge{
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .swatch{
+      width: 22px;
+      height: 22px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: #38bdf8;
+      box-shadow: inset 0 0 0 2px rgba(0,0,0,.15);
+    }
+
+    .hint{
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.35;
+      margin: 0;
+    }
+
+    /* Form */
+    form{ display: grid; gap: 12px; }
+
+    label{
+      font-size: .92rem;
+      color: var(--muted);
+      display: grid;
+      gap: 6px;
+    }
+
+    input{
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(148,163,184,.28);
+      background: rgba(2,6,23,.55);
+      color: var(--text);
+      outline: none;
+    }
+
+    input:focus{
+      border-color: rgba(56,189,248,.8);
+      box-shadow: 0 0 0 4px rgba(56,189,248,.12);
+    }
+
+    .btn-row{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    button{
+      border: 0;
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button:active{ transform: translateY(1px); }
+
+    .primary{
+      background: linear-gradient(135deg, rgba(56,189,248,1), rgba(167,139,250,1));
+      color: #07131b;
+    }
+
+    .ghost{
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(148,163,184,.28);
+    }
+
+    .note{
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Page title/header (good structure + readability) -->
+  <header>
+    <h1>Abhinav V’s Personal Dashboard</h1>
+    <p>Fill out the form to update the profile card using JavaScript.</p>
+  </header>
+
+  <main>
+    <!-- Section 1: Profile card -->
+    <section class="panel" aria-label="Profile Card">
+      <h2 style="margin-top:0;">Profile Card</h2>
+
+      <div class="profile-card" id="profileCard">
+        <div class="profile-top">
+          <div class="avatar" id="avatar">AV</div>
+
+          <div class="profile-meta">
+            <h2 id="displayName">Abhinav V</h2>
+            <p class="email" id="displayEmail">abhinav@example.com</p>
+          </div>
+        </div>
+
+        <div class="color-row">
+          <div class="color-badge">
+            <span class="swatch" id="colorSwatch" aria-hidden="true"></span>
+            <span>Favorite Color: <strong id="displayColor">#38bdf8</strong></span>
+          </div>
+        </div>
+
+        <p class="hint">
+          I made this so the card updates when you submit the form (and the color preview updates instantly).
+        </p>
+      </div>
+    </section>
+
+    <!-- Section 2: User input form -->
+    <section class="panel" aria-label="User Input Form">
+      <h2 style="margin-top:0;">Update Your Info</h2>
+
+      <!-- Form required by rubric (name, email, favorite color) -->
+      <form id="userForm">
+        <label>
+          Name
+          <input id="nameInput" type="text" value="Abhinav V" required />
+        </label>
+
+        <label>
+          Email
+          <input id="emailInput" type="email" value="abhinav@example.com" required />
+        </label>
+
+        <label>
+          Favorite Color
+          <input id="colorInput" type="color" value="#38bdf8" />
+        </label>
+
+        <div class="btn-row">
+          <button class="primary" type="submit">Save to Card</button>
+          <button class="ghost" type="button" id="resetBtn">Reset</button>
+        </div>
+
+        <p class="note">
+          This page uses basic DOM updates (no libraries). Submit updates the profile card.
+        </p>
+      </form>
+    </section>
+
+<!-- Task Manager -->
+<section class="panel">
+  <h2>Task Manager</h2>
+
+  <form id="taskForm">
+
+    <input id="taskInput" type="text" placeholder="Enter a task..." required>
+
+    <button type="submit">Add Task</button>
+    <button type="button" id="sortTasks">Sort Tasks</button>
+    <button type="button" id="filterTasks">Show Completed</button>
+
+  </form>
+
+  <ul id="taskList"></ul>
+
+</section>
+  
+</main>
+
+  <script src="app.js"></script>
+</body>
+</html>
